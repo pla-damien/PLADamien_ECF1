@@ -85,6 +85,32 @@ class MongoBooksManager:
             logging.error(f"Erreur MongoDB: {e}")
             return 0
 
+    def get_all_books(self) -> List[Dict]:
+        """
+        Récupère tous les livres de la collection.
+
+        Args:
+            projection (Optional[Dict]): Dictionnaire de projection pour sélectionner
+                                        uniquement certains champs. Ex: {"title": 1, "author": 1}
+                                        Si None, tous les champs sont retournés.
+
+        Returns:
+            List[Dict]: Liste de tous les livres trouvés.
+        """
+        try:
+            # Récupération des documents avec la projection si spécifiée
+            query = {}
+            cursor = self.collection.find({}, query)
+            # Conversion du curseur en liste
+            books = list(cursor)
+
+            logging.info(f" {len(books)} livres récupérés.")
+            return books
+
+        except PyMongoError as e:
+            logging.error(f"Erreur lors de la récupération des livres: {e}")
+            return []
+
     def close(self) -> None:
         if self.client:
             self.client.close()

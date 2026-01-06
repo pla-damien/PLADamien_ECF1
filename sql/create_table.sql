@@ -13,3 +13,24 @@ CREATE TABLE librairies (
     latitude DECIMAL(10, 8),
     longitude DECIMAL(11, 8)
 );
+
+
+CREATE TABLE category (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(25) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE books (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    price FLOAT,
+    category_id INTEGER REFERENCES category(id),
+    description VARCHAR(500),
+    rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+    stock BOOLEAN,
+    scraped_at DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
