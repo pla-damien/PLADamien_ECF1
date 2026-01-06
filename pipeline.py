@@ -154,18 +154,11 @@ def storage_book(book: book):
 def main():
 
     scraper = QuotesScraper()
-
-    # Scrape les 2 premières pages pour le test
-    quotes = scraper.scrape_quotes(max_pages=2)
-    return quotes
-
-
-
-if __name__ == "__main__":
+    quotes = scraper.scrape_quotes()
     manager = MongoQuotesManager(uri="mongodb://admin:admin123@mongodb:27017")
     scraper = QuotesScraper()
-    inserted = manager.upsert_quotes(test_scrape_quotes())
-    print(f"📚 {inserted} nouveau(x) livre(s) inséré(s).")  # Affiche "1"
+    inserted = manager.upsert_quotes(quotes)
+    print(f"📚 {inserted} nouveau(x) livre(s) inséré(s).") 
     manager.close()
 
 
@@ -173,7 +166,7 @@ if __name__ == "__main__":
     books = scraper.scrape_all_books()
     manager = MongoBooksManager(uri="mongodb://admin:admin123@mongodb:27017")
     inserted = manager.upsert_books(books)
-    print(f"📚 {inserted} nouveau(x) livre(s) inséré(s).")  # Affiche "1"
+    print(f"📚 {inserted} nouveau(x) livre(s) inséré(s).")  
     manager.close()
 
 
