@@ -29,7 +29,7 @@ def get_change():
         return 1.16  # Valeur par défaut
 
 def get_category(category: str):
-    DNS = "dbname=ECF_db user=admin password=admin123 host=localhost port=5432"
+    DNS = "dbname=ECF_db user=admin password=admin123 host=postgres port=5432"
     try:
         with psycopg2.connect(DNS) as conn:
             with conn.cursor() as cur:
@@ -45,14 +45,14 @@ def get_category(category: str):
 
 # ==========================IMPORT===============================
 def get_books():
-    Mongo = MongoBooksManager(uri="mongodb://admin:admin123@localhost:27017")
+    Mongo = MongoBooksManager(uri="mongodb://admin:admin123@mongodb:27017")
     books = Mongo.get_all_books()
     return books
 
 def split_books(row):
     livre = book(
         title=row["title"],
-        price=0.0,  # Initialisation avec une valeur par défaut
+        price=row["price"],  
         description=row["description"],
         rating=row["rating"],
         stock=row["stock"],
@@ -66,6 +66,7 @@ def split_books(row):
 # ==========================TRANSFORM===============================
 def price_euro(price_livre):
     change = get_change()
+    print("Change : ", change)
     price = round(change * price_livre, 2)  # Arrondir à 2 décimales
     return price
 
@@ -89,7 +90,7 @@ def stock_book(stock):
 
 # ==========================EXPORT===============================
 def storage_category(name: str):
-    DNS = "dbname=ECF_db user=admin password=admin123 host=localhost port=5432"
+    DNS = "dbname=ECF_db user=admin password=admin123 host=postgres port=5432"
     with psycopg2.connect(DNS) as conn:
         with conn.cursor() as cur:
             try:
@@ -105,7 +106,7 @@ def storage_category(name: str):
                 print(f"Autre erreur pour {name}: ", e)
 
 def storage_book(book: book):
-    DNS = "dbname=ECF_db user=admin password=admin123 host=localhost port=5432"
+    DNS = "dbname=ECF_db user=admin password=admin123 host=postgres port=5432"
     try:
         with psycopg2.connect(DNS) as conn:
             with conn.cursor() as cur:
@@ -148,10 +149,21 @@ def storage_book(book: book):
         print("Erreur inattendue:", e)
 
 def main():
+
+    scraper = BooksScraper()
+    books = scraper.scrape_all_books()
+    manager = MongoBooksManager(uri="mongodb://admin:admin123@mongodb:27017")
+    inserted = manager.upsert_books(books)
+    print(f"📚 {inserted} nouveau(x) livre(s) inséré(s).")  # Affiche "1"
+    manager.close()
+
+
     all_books = get_books()
     for row in all_books:
         one_book = split_books(row)
+        print("book price " ,one_book.price )
         one_book.price = price_euro(one_book.price)
+        
         one_book.dispo = stock_book(one_book.stock)
 
         # Récupérer l'ID de la catégorie

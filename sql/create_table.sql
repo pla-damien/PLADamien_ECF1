@@ -27,7 +27,7 @@ CREATE TABLE books (
     title VARCHAR(100) NOT NULL,
     price FLOAT,
     category_id INTEGER REFERENCES category(id),
-    description VARCHAR(500),
+    description TEXT,
     rating INTEGER CHECK (rating BETWEEN 1 AND 5),
     stock BOOLEAN,
     scraped_at DATE,

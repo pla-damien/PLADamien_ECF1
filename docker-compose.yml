@@ -90,7 +90,35 @@ services:
       - postgres
     networks:
       - tp-network
+      
+  pipeline:
+    build: .
+    container_name: tp-pipeline
+    depends_on:
+      minio:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      # MinIO
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
 
+      # MongoDB
+      MONGO_URI: mongodb://admin:admin123@mongodb:27017/ecommerce_db?authSource=admin
+
+      # PostgreSQL
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ECF_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+
+    networks:
+      - tp-network
 # Volumes existants + nouveau volume pour PostgreSQL
 volumes:
   minio_data:

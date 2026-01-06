@@ -8,7 +8,7 @@ from datetime import datetime
 class MongoBooksManager:
     def __init__(
         self,
-        uri: str = "mongodb://localhost:27017",
+        uri: str = "mongodb://mongo:27017",
         db_name: str = "ecf_data_lake",
         collection_name: str = "books"
     ):
