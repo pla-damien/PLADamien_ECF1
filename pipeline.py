@@ -28,7 +28,7 @@ def get_change():
         return data['rates']['EUR']
     except Exception as e:
         print(f"Erreur lors de la récupération du taux de change: {e}")
-        return 1.16  # Valeur par défaut
+        return 1.16  
 
 def get_category(category: str):
     DNS = "dbname=ECF_db user=admin password=admin123 host=postgres port=5432"
