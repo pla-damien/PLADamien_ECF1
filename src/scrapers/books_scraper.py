@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from .config import BASE_URL, USER_AGENT
-from typing import List, Dict, Tuple, Optional
+from typing import  Dict
 
 class BooksScraper:
     def __init__(self):

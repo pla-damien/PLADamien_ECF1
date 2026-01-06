@@ -1,7 +1,7 @@
 # mongo_manager.py (version avec upsert)
 from pymongo import MongoClient, UpdateOne
 from pymongo.errors import PyMongoError, BulkWriteError
-from typing import List, Dict, Optional
+from typing import List, Dict
 import logging
 from datetime import datetime
 

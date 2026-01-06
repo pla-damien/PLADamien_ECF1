@@ -1,5 +1,7 @@
 from src.scrapers.books_scraper import BooksScraper
+from src.scrapers.quotes_scraper import QuotesScraper
 from src.storage.MongoDB_books import MongoBooksManager
+from src.storage.MongoDB_quotes import MongoQuotesManager
 from dataclasses import dataclass
 import requests
 import psycopg2
@@ -148,7 +150,24 @@ def storage_book(book: book):
     except Exception as e:
         print("Erreur inattendue:", e)
 
+
 def main():
+
+    scraper = QuotesScraper()
+
+    # Scrape les 2 premières pages pour le test
+    quotes = scraper.scrape_quotes(max_pages=2)
+    return quotes
+
+
+
+if __name__ == "__main__":
+    manager = MongoQuotesManager(uri="mongodb://admin:admin123@mongodb:27017")
+    scraper = QuotesScraper()
+    inserted = manager.upsert_quotes(test_scrape_quotes())
+    print(f"📚 {inserted} nouveau(x) livre(s) inséré(s).")  # Affiche "1"
+    manager.close()
+
 
     scraper = BooksScraper()
     books = scraper.scrape_all_books()
